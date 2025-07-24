@@ -3,13 +3,13 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 
 const app = express();
-const port = process.env.PORT || 3002;
+const port = process.env.PORT || 8080;
 
-const DATA_BASE = "mongodb://localhost:27017/SampleApp_DB";
+const DATA_BASE = "mongodb+srv://sanjivanibhongade:Kizora%401234@cluster0.l4ootk.mongodb.net/admin-dashboard";
 
 //  Use CORS middleware
 app.use(cors({
-  origin: 'http://localhost:3000', 
+  origin: 'http://localhost:8080', 
   credentials: true 
 }));
 
