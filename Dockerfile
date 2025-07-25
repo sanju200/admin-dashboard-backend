@@ -3,8 +3,8 @@ FROM node:14-alpine
 WORKDIR /app
 
 # Copy package.json and package-lock.json
-COPY package.json package.json
-COPY .husky .husky
+# COPY package.json package.json
+# COPY .husky .husky
 
 COPY . .
 
