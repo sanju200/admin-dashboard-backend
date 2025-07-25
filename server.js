@@ -9,7 +9,7 @@ const DATA_BASE = "mongodb+srv://sanjivanibhongade:Kizora%401234@cluster0.l4ootk
 
 //  Use CORS middleware
 app.use(cors({
-  origin: 'http://localhost:8080', 
+  origin: 'http://localhost:3000', 
   credentials: true 
 }));
 
