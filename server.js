@@ -5,7 +5,7 @@ const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 8080;
 
-const DATA_BASE = "mongodb+srv://sanjivanibhongade:Kizora%401234@cluster0.aljb9az.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0/dashboard";
+const DATA_BASE = "mongodb+srv://sanjivanibhongade:Kizora%401234@cluster0.eqsemdl.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0/test";
 
 //  Use CORS middleware
 app.use(cors({
