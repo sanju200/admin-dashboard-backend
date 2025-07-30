@@ -1,10 +1,14 @@
 // routes/users.js
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 const express = require('express');
 const router = express.Router();
 const User = require('../models/userModel');
+const authenticateToken = require('../middlewares/auth');
+require('dotenv').config();
 
 // Define a route
-router.get('/', async (req, res) => {
+router.get('/', authenticateToken, async (req, res) => {
     try{
         const data = await User.find({});
         res.json(data);
@@ -14,19 +18,20 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.post('/', async (req, res ) => {
+router.post('/', authenticateToken, async (req, res ) => {
     try{
-        const newUser = new User({
-            firstname: req.body.firstname,
-            lastname: req.body.lastname,
-            email: req.body.email,
-            phone: req.body.phone,
-            address: req.body.address,
-            dob: req.body.dob,
-            status: req.body.status,
-        });
+        const { firstname, lastname, email, phone, address, dob, status, password } = req.body;
+        let newUser = new User({ firstname, lastname, email, phone, address, dob, status });
+        console.log(req.body);
+        if(req.body.password){
+            const hashedPassword = await bcrypt.hash(password, 10);
+            console.log("hashedPassword ", hashedPassword);
+            newUser.password = hashedPassword;
+        }
         await newUser.save();
-        res.status(201).json(newUser);
+        const token = getGeneratedAccessToken({ userId: newUser._id, email: newUser.email });
+        const userObject = newUser.toObject();
+        res.status(201).json({...userObject, access_token: token});
     } catch (err) {
         if(err.code === 11000){
             return res.status(409).json({message: 'Email already exists'});
@@ -35,19 +40,26 @@ router.post('/', async (req, res ) => {
     }
 })
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', authenticateToken, async (req, res) => {
     try{
-        const updatedUser = await User.findByIdAndUpdate(
+        const {firstname, lastname, email, phone, address, dob, status, password } = req.body;
+        let updatedUser = { firstname, lastname, email, phone, address, dob, status };
+        if(req.body.password){
+            const hashedPassword = await bcrypt.hash(password, 10);
+            updatedUser.password = hashedPassword;
+        }
+        updatedUser = await User.findByIdAndUpdate(
             req.params.id,
-            req.body,
+            updatedUser,
             { new: true, runValidators: true }
         );
-
+        console.log('updatedUser ', );
+        const token = getGeneratedAccessToken({ userId: updatedUser._id, email: updatedUser.email });
         if(!updatedUser){
             return res.status(404).json({message: 'User not found'});
         }
-
-        res.json(updatedUser);
+        const userObject = updatedUser.toObject();
+        res.json({ ...userObject, access_token: token });
     }catch(err){
         if(err.name === 'ValidationError') {
             return res.status(400).json({message: err.message});
@@ -56,7 +68,7 @@ router.put('/:id', async (req, res) => {
     }
 })
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authenticateToken, async (req, res) => {
     try{
         const deleteUser = await User.findByIdAndDelete(req.params.id);
 
@@ -69,5 +81,9 @@ router.delete('/:id', async (req, res) => {
     }
 })
 
+function getGeneratedAccessToken(payload){
+  const token = jwt.sign(payload, process.env.JWT_SECRET );
+  return token;
+}
 
 module.exports = router;

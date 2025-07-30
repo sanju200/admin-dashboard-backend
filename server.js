@@ -1,9 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-
 const app = express();
 const port = process.env.PORT || 8080;
+
+require('dotenv').config();
 
 const DATA_BASE = "mongodb+srv://sanjivanibhongade:Kizora%401234@cluster0.eqsemdl.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0/test";
 
@@ -30,9 +31,11 @@ app.get('/', (req, res) => {
 // Routes
 const usersRoute = require('./routes/users');
 const productsRoute = require('./routes/products');
+const authRoute = require('./routes/authentication');
 
 app.use('/users', usersRoute);
 app.use('/products', productsRoute);
+app.use('/auth', authRoute);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

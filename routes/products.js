@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const Products = require('../models/productModel');
+const Products = require('../models/productModel'); 
 const Ratings = require('../models/ratingModel');
+const authenticateToken = require('../middlewares/auth');
 
 // Define a route
-router.get('/', async (req, res) => {
+router.get('/', authenticateToken, async (req, res) => {
     try{
         const data = await Products.find({});
         res.json(data);
@@ -14,7 +15,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.get('/ratings', async (req, res) => {
+router.get('/ratings', authenticateToken, async (req, res) => {
     try{
         const data = await Ratings.find({});
         res.json(data);
@@ -24,7 +25,7 @@ router.get('/ratings', async (req, res) => {
     }
 });
 
-router.get('/ratings/average', async (req, res) => {
+router.get('/ratings/average', authenticateToken, async (req, res) => {
     try{
         const data = await Ratings.find({});
         const formatedData = data.map((item) => {
