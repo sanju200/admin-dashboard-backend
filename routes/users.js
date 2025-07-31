@@ -19,9 +19,10 @@ router.get('/', authenticateToken, async (req, res) => {
 });
 
 router.post('/', authenticateToken, async (req, res ) => {
+    debugger;
     try{
-        const { firstname, lastname, email, phone, address, dob, status, password } = req.body;
-        let newUser = new User({ firstname, lastname, email, phone, address, dob, status });
+        const { firstname, lastname, email, phone, address, dob, status, role, password} = req.body;
+        let newUser = new User({ firstname, lastname, email, phone, address, dob, status, role });
         console.log(req.body);
         if(req.body.password){
             const hashedPassword = await bcrypt.hash(password, 10);
@@ -42,8 +43,8 @@ router.post('/', authenticateToken, async (req, res ) => {
 
 router.put('/:id', authenticateToken, async (req, res) => {
     try{
-        const {firstname, lastname, email, phone, address, dob, status, password } = req.body;
-        let updatedUser = { firstname, lastname, email, phone, address, dob, status };
+        const {firstname, lastname, email, phone, address, dob, status, role, password } = req.body;
+        let updatedUser = { firstname, lastname, email, phone, address, dob, status, role };
         if(req.body.password){
             const hashedPassword = await bcrypt.hash(password, 10);
             updatedUser.password = hashedPassword;

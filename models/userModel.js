@@ -32,8 +32,11 @@ const users = new mongoose.Schema({
     },
     password: {
         type: String,
-        match: ['^[a-zA-Z0-9]{3,30}$']
     },
+    role: {
+        type: String,
+        required: true,
+    }
 });
 
 module.exports = mongoose.model('users', users);
